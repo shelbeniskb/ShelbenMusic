@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test</title>
+    <script src="http://libs.useso.com/js/jquery/2.0.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    var url = "http://geci.me/api/lyric/love"
+    url = 'http://127.0.0.1:8217';
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function(text){
+            console.log(text);
+        },
+        error: function(){
+            alert("Error");
+        },
+        dataType: "text"
+});
+    </script>
+</head>
+<body>
+
+</body>
+</html>
