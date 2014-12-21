@@ -23,8 +23,6 @@ var host = {
 
     showSlider: false,
 
-    songsList: [],
-
     init: function() {
         this.playBtn = $('#play')[0];
         this.palyIcon = $('#play-icon')[0];
@@ -61,16 +59,12 @@ var host = {
         $('#like').on('click', function(e){
             var curMusic = host.curMusic;
             if (curMusic) {
-                curMusic.number = host.songsList.length;
                 $.ajax({
                     type: 'POST',
                     data: curMusic,
                     url: 'http://chn-kehu:8217/addSong',
                     success: function(data) {
                         console.log(data);
-                        if (data.success) {
-                            host.initSongList();
-                        }
                     }
                 });
             }
@@ -107,22 +101,19 @@ var host = {
         var songs = data.songs,
             rowContainer = $('#song-row-container')[0];
         this.songsList = songs;
-        while (rowContainer.firstChild) { //remove all the old children DOM node
-            rowContainer.removeChild(rowContainer.firstChild);
-        }
         for(var i = 0; i < songs.length; i++) {
-            var rowElem = this.createSongRow(songs[i]);
+            var rowElem = this.createSongRow(i, songs[i]);
             rowContainer.appendChild(rowElem);
         }
     },
 
-    createSongRow: function(songInfo) {
+    createSongRow: function(num, songInfo) {
         var tr = document.createElement('tr'),
             tdNum = document.createElement('td'),
             tdName = document.createElement('td'),
             tdTime = document.createElement('td'),
             tdSinger = document.createElement('td');
-        tdNum.innerHTML = songInfo.number;
+        tdNum.innerHTML = num;
         tdName.innerHTML = songInfo.songName;
         tdTime.innerHTML = songInfo.time;
         tdSinger.innerHTML = songInfo.artistName;
@@ -167,7 +158,7 @@ var host = {
         ulDom.style.width = width + 'px';
         for (var i = 0; i < len; i++) {
             var liDom = document.createElement('li'),
-                songInfo = {songName: songs[i].name, artistName: songs[i].artists[0].name, audioUrl: songs[i].audio, artistImg: songs[i].album.picUrl};
+                songInfo = {'songName': songs[i].name, 'artistName': songs[i].artists[0].name, 'audioUrl': songs[i].audio, 'artistImg': songs[i].album.picUrl};
             liDom.innerHTML = songs[i].name + '   ' + songs[i].artists[0].name;
             liDom.className = "list-group-item";
             liDom.songInfo = songInfo;
@@ -194,21 +185,9 @@ var host = {
         audio.src = songInfo.audioUrl;
         audio.addEventListener('canplaythrough', function() {
             songInfo.time = this.duration;
-            host.curMusic = songInfo;
+            this.curMusic = songInfo;
             host.togglePlay(this);
         });
-        audio.addEventListener('ended', function() {
-            host.doPlayNext();
-        })
-    },
-
-    doPlayNext: function() {
-        var curMusic = this.curMusic,
-            songsList = this.songsList,
-            curNum = curMusic.number,
-            nextNum = (curNum + 1)%songsList.length;
-        console.log(songsList[nextNum]);
-        this.doPlayAudio(songsList[nextNum]);
     },
 
     dealwithLrc: function(lrc) {

@@ -1,0 +1,75 @@
+
+
+
+
+#artist-img {
+    width: 350px;
+    height: 400px;
+}
+
+#player-container {
+    padding: 10px 28px;
+}
+
+#lrc-container {
+    text-align: center;
+}
+
+.lrc-row {
+    line-height: 50px;
+    font-size: 15px;
+}
+#lrc-row-3 {
+    font-size: 25px;
+    color: #880000;
+}
+#lrc-title {
+    font-size: 30px;
+    font: bold;
+}
+
+.slider-container {
+    position: absolute;
+    width: 360px;
+    height: 1000px;
+    left: -334px;
+    top: 0;
+    box-shadow: 10px 0 10px 0 rgba(0,0,0,0.1);
+    transition: left 0.5s ease-in-out;
+}
+
+.slider-container.show {
+    left: 0px;
+}
+
+#slider-trigger {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 26px;
+    height: 1000px;
+}
+
+.slider-control {
+    position: absolute;
+    top: 312px;
+    right: 0px;
+    height: 85px;
+    width: 16px;
+    background: url(../images/sidebar_icon.png) no-repeat 0px 0px;
+    transform: rotate(180deg);
+    transition: transform;
+}
+
+.slider-control.roate {
+    transform: rotate(0deg);
+}
+
+.slider-control:hover {
+    background: url(../images/sidebar_icon.png) 0px -85px;
+}
+
+#slider-content {
+    width: 334px;
+}
+

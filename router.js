@@ -38,25 +38,18 @@ route = function(pathname, query, res) {
                 res.end(data);
             });
         }else {
-            if (pathname === "getSongList") {
-                /*var songList = song.getSong(query.username);*/
-                if (query.callback) { //prove jsonp service
-                    var str = query.callback + '(' + JSON.stringify(data) + ')';
-                    res.end(str);
-                } else {
-                    res.writeHead(200, {"Content-Type" : "text/json"});
-                    res.end(JSON.stringify(data));
-                }
-            } else {
-                res.writeHead(404, {"Content-Type": "text/html"});
-                res.end("<h1>404 Not Found</h1>");      
-            }
+            res.writeHead(404, {"Content-Type": "text/html"});
+            res.end("<h1>404 Not Found</h1>");      
         }
     });
 }
 routeForPost = function(pathname, query, res) {
     if (pathname === '/addSong') {
         song.addSong(query, res);
+    }
+
+    if (pathname === "/getSongList") {
+        song.findSongAll(res);
     }
 }
 
