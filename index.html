@@ -1,11 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Shelben Music</title>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <script src="http://libs.useso.com/js/jquery/2.0.2/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css"><!-- 使用图标 http://ionicons.com/ -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="./javascript/shelbenmusic.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/main.css">
@@ -13,19 +15,17 @@
 <body>
     <div class="container">
         <div class="row col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2">
-            <div class="col-md-12 col-lg-12">
-                <div class="navbar" role="navigation">
-                    <div class="input-group col-md-6 col-lg-6 pull-right">
-                        <input id="search_input" type="text" class="form-control" placeholder="Song Name">
-                        <div class="input-group-btn">
-                            <button id="search_btn" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
-                        </div>
+            <div class="navbar" role="navigation">
+                <div class="input-group col-md-6 col-lg-6 pull-right">
+                    <input id="search_input" type="text" class="form-control" placeholder="Song Name">
+                    <div class="input-group-btn">
+                        <button id="search_btn" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2">
+        <div id="show-container" class="row col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2">
             <div class="col-md-7 col-lg-7">
                 <img id="artist-img" src="./images/gem.jpg">
             </div>
@@ -58,10 +58,6 @@
                     <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
                 </button>
 
-                <button id="volume" class="btn btn-defult">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                </button>
-
                 <button id="next" class="btn btn-defult">
                     <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
                 </button>
@@ -77,9 +73,17 @@
 
     <div id="slider-page" class="slider-container">
         <div id="slider-content">
-            <table id="love-song-table" class="table table-striped">
+            <table id="love-song-table" class="table">
+                <colgroup>
+                    <col class="id" span="1"/>
+                    <col class="state" span="1">
+                    <col class="name" span="1"/>
+                    <col class="time" span="1"/>
+                    <col class="artist" span="1"/>
+                </colgroup>
                 <thead>
                     <tr>
+                        <th></th>
                         <th></th>
                         <th>Song</th>
                         <th>Time</th>
@@ -87,24 +91,6 @@
                     </tr>
                 </thead>
                 <tbody id="song-row-container">
- <!--                    <tr>
-                        <td>1</td>
-                        <td>Love</td>
-                        <td>4:30</td>
-                        <td>AI</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>If I were a boy</td>
-                        <td>3:30</td>
-                        <td>Hebe</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>When You're Gone</td>
-                        <td>3:30</td>
-                        <td>SHE</td>
-                    </tr> -->
                 </tbody>
             </table>
         </div>
@@ -113,8 +99,59 @@
             </div>
         </div>
     </div>
+    
+    <div id="user-container">
+        <span class="ion-social-github"></span>
+        <span>登录</span>
+    </div>
 
-
+    <div id="user-login-signup" class="stage">
+        <div class="rotate-container">
+            <div id="user-login-part" class="card front">
+                <div class="ion-social-octocat">
+                </div>
+                <form role="form">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password">
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"> Remember Me.
+                    </label>
+                  </div>
+                  <button type="submit" class="btn btn-default">Sign In</button>
+                </form>
+                <div>Don't have account, <span id="signup-link">Sign up now!</span></div>
+            </div>
+            <div id="user-signup-part" class="card back">
+                <div class="ion-social-github">
+                </div>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Confirm Password</label>
+                        <input type="password" class="form-control" id="passwordagain" placeholder="Confirm Password">
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign Up</button>
+                </form>
+                <div>Already have account, <span id="signin-link">Sign in!</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="overlay" class="overlay"></div>
 
 
 

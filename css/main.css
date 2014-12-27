@@ -1,7 +1,8 @@
 
 
-
-
+.container {
+    margin-top: 5px;
+}
 #artist-img {
     width: 350px;
     height: 400px;
@@ -9,6 +10,64 @@
 
 #player-container {
     padding: 10px 28px;
+}
+
+#show-container {
+    height: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#user-container {
+    position: absolute;
+    top: 5px;
+    right: 50px;
+    width: 80px;
+    height: 35px;
+    text-align: center;
+}
+#user-login-signup {
+    display: none;
+    width: 300px;  
+    height: 500px;  
+    position: absolute;  
+    left: 50%;  
+    top: 50%;
+    margin-left: -150px;  
+    margin-top: -250px;
+    text-align: center;  
+    z-index: 100; 
+    perspective: 1000px;
+    border: 1px dotted orange;
+    border-radius: 8px;
+}
+.rotate-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    transition: 0.5s;
+    transform-style: preserve-3d;
+}
+.card {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px;
+    backface-visibility: hidden;
+}
+
+.front {
+    z-index: 199;
+    background-color: #eaedec;
+    opacity: .8;
+}
+
+.back {
+    transform: rotateY(180deg);
+    background-color: #eaedec;
+    opacity: .8;
 }
 
 #lrc-container {
@@ -31,11 +90,12 @@
 .slider-container {
     position: absolute;
     width: 360px;
-    height: 1000px;
+    height: 100%;
     left: -334px;
     top: 0;
     box-shadow: 10px 0 10px 0 rgba(0,0,0,0.1);
     transition: left 0.5s ease-in-out;
+    background-color: #FFFFFF;
 }
 
 .slider-container.show {
@@ -47,7 +107,7 @@
     right: 0px;
     top: 0px;
     width: 26px;
-    height: 1000px;
+    height: 100%;
 }
 
 .slider-control {
@@ -61,7 +121,7 @@
     transition: transform;
 }
 
-.slider-control.roate {
+.slider-control.rotate {
     transform: rotate(0deg);
 }
 
@@ -72,4 +132,94 @@
 #slider-content {
     width: 334px;
 }
+
+tr.isPlaying {
+    background-color: #e1e8e5;
+}
+
+#song-row-container tr:hover {
+   color: hotpink;
+}
+
+.table {
+    width: auto;
+}
+
+.table tr {
+    color: #636564;
+}
+.table td.showPlayIcon {
+    background: url(../images/ic_paly.gif) no-repeat center;
+}
+
+col.id {
+    width: 10px;
+}
+col.state {
+    width: 10px;
+}
+col.name {
+    width: 150px;
+}
+col.time {
+    width: 20px;
+}
+col.artist {
+    width: 100px;
+}
+
+.glyphicon.glyphicon-heart.like {
+    color: red;
+}
+
+.ion-social-github {
+    font-size: 20px;
+}
+
+.overlay {
+    display: none;
+    background-color: white;
+    opacity: 0.5;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 99;
+}
+
+#signup-link {
+    color: red;
+    text-decoration: underline;
+}
+
+#signup-link:hover{
+    color: pink;
+}
+
+#signin-link {
+    color: red;
+    text-decoration: underline;
+}
+
+#signin-link:hover{
+    color: pink;
+}
+
+#user-signup-part .ion-social-github {
+    font-size: 50px;
+}
+#user-login-part .ion-social-octocat {
+    font-size: 50px;
+}
+
+/*@keyframe: SignUpIn {
+    from {left: -50px;}
+    to {left: 0px;}
+};
+
+@keyframe: SignUpOut {
+    from { left: 0px;}
+    to {left:　-50px;}
+};*/
 
