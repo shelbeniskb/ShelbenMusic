@@ -5,7 +5,9 @@
     <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script src="http://libs.useso.com/js/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css"><!-- 使用图标 http://ionicons.com/ -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
@@ -13,43 +15,48 @@
     <link rel="stylesheet" type="text/css" href="./css/main.css">
 </head>
 <body>
+    <div class="body_bg">
+        <img src="./images/public_bg_1.png">
+    </div>
     <div class="container">
-        <div class="row col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2">
-            <div class="navbar" role="navigation">
-                <div class="input-group col-md-6 col-lg-6 pull-right">
+        <div class="row">
+            <div class="forgap col-md-6 col-lg-6"></div>
+            <div class="navbar col-md-4 col-lg-4" role="navigation"> 
+                <div class="input-group">
                     <input id="search_input" type="text" class="form-control" placeholder="Song Name">
                     <div class="input-group-btn">
                         <button id="search_btn" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
             </div>
+            <div id="user-container" class="col-md-2 col-lg-2">
+                <span class="ion-social-github"></span>
+                <span>登录</span>
+            </div>
         </div>
 
-        <div id="show-container" class="row col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2">
-            <div class="col-md-7 col-lg-7">
-                <img id="artist-img" src="./images/gem.jpg">
-            </div>
-            <div id="lrc-container" class="col-md-5 col-lg-5">
-                <div>
-                    <span id="lrc-title">G.E.M</span>
-                    <div id="lrc-content">
-                        <br/>
-                        <span id="lrc-row-1" class="lrc-row">1</span>
-                        <br/>
-                        <span id="lrc-row-2" class="lrc-row">2</span>
-                        <br/>
-                        <span id="lrc-row-3" class="lrc-row">3</span>
-                        <br/>
-                        <span id="lrc-row-4" class="lrc-row">4</span>
-                        <br/>
-                        <span id="lrc-row-5" class="lrc-row">5</span>
+        <div id="show-container" class="row">
+            <div class="forgap col-md-1 col-lg-1"></div>
+            <div class="stage-container col-md-10 col-lg-10">
+                <div class="show-stage">
+                    <div class="show-container">
+                        <img class="img-card card1" src="./images/gem.jpg">
+                        <img class="img-card card2" src="./images/gem.jpg">
+                        <img class="img-card card3" src="./images/gem.jpg">
+                        <img class="img-card card4" src="./images/gem.jpg">
+                        <img class="img-card card5" src="./images/gem.jpg">
+                        <img class="img-card card6" src="./images/gem.jpg">
+                        <img class="img-card card7" src="./images/gem.jpg">
+                        <img class="img-card card8" src="./images/gem.jpg">
+                        <img class="img-card card9" src="./images/gem.jpg">
                     </div>
                 </div>
             </div>
+            <div class="forgap col-md-1 col-lg-1"></div>
         </div>
 
-        <div id="player-container" class="row col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2">
-            <div >
+        <div id="player-container" class="row">
+            <div class="play-content">
                 <button id="play" class="btn btn-defult">
                     <span id="play-icon" class="glyphicon glyphicon-play" aria-hidden="true"></span>
                 </button>
@@ -60,6 +67,10 @@
 
                 <button id="next" class="btn btn-defult">
                     <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
+                </button>
+
+                <button id="volume" class="btn btn-defult">
+                    <span class="glyphicon glyphicon-volume-up"></span>
                 </button>
                 
             </div>
@@ -100,10 +111,6 @@
         </div>
     </div>
     
-    <div id="user-container">
-        <span class="ion-social-github"></span>
-        <span>登录</span>
-    </div>
 
     <div id="user-login-signup" class="stage">
         <div class="rotate-container">
@@ -151,6 +158,7 @@
         </div>
     </div>
     
+    <div id="volume-slider"></div>
     <div id="overlay" class="overlay"></div>
 
 

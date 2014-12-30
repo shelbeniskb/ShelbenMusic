@@ -25,6 +25,12 @@ var host = {
 
     songsList: [],
 
+    imgList: [],
+
+    frontImgIdx: 0,
+
+    imgSongMap: [],
+
     init: function() {
         this.playBtn = $('#play')[0];
         this.playIcon = $('#play-icon')[0];
@@ -35,9 +41,6 @@ var host = {
         this.searchBtn = $('#search_btn')[0];
         this.defaultPlayer = $('#player_default')[0];
         this.artistImg = $("#artist-img")[0];
-        this.lrcTitle = $("#lrc-title")[0];
-        this.lrcContent = $("#lrc-content")[0];
-        this.lrcLine = $(".lrc-row");
         this.sliderPage = $('#slider-page');
         this.sliderTrigger = $('#slider-trigger');
         this.sliderContorl = $('#slider-ctrl');
@@ -82,6 +85,40 @@ var host = {
             }
         });
 
+        $('#volume').on('click', function() {
+            var x = $(this).offset().left,
+                y = $(this).offset().top,
+                height = 100;
+                outerWidth1 = $(this).outerWidth(),
+                outerWidth2 = $('#volume-slider').outerWidth();
+            $('#volume-slider').css({
+                'position': 'absolute',
+                'left': x + (outerWidth1 - outerWidth2) / 2 + 'px',
+                'top': y - height + 'px',
+                'height': height
+            });
+            $('#volume-slider').css('display','block');
+            $(document).on('click', function() {
+                $('#volume-slider').css('display','none');
+                $(document).off('click');
+            });
+            return false;
+        });
+
+        $('#volume-slider').slider({
+            min: 0,
+            max: 100,
+            value: host.defaultPlayer.volume * 100,
+            slide: function(event, ui) {
+                var defaultPlayer = host.defaultPlayer,
+                    value = ui.value;
+                defaultPlayer.volume = value / 100;
+            }
+        });
+        $('#volume-slider').slider({
+            orientation: "vertical"
+        });
+
 
         $('#slider-trigger').on('click', function() {
             if (host.showSlider === false) {
@@ -112,17 +149,36 @@ var host = {
                 $(document).off('click');
             });
             $('#user-login-signup').on('click', function(e) {
-                e.stopPropagation();
+                return false;
             });
-            e.stopPropagation();
+            return false;
         });
+
+
+        $('.img-card').bind('error', function() {
+            this.src = "./favicon.png"
+        });
+
+        this.imgList.push($('.img-card.card1'));
+        this.imgList.push($('.img-card.card2'));
+        this.imgList.push($('.img-card.card3'));
+        this.imgList.push($('.img-card.card4'));
+        this.imgList.push($('.img-card.card5'));
+        this.imgList.push($('.img-card.card6'));
+        this.imgList.push($('.img-card.card7'));
+        this.imgList.push($('.img-card.card8'));
+        this.imgList.push($('.img-card.card9'));
+        this.frontImgIdx = 0;
 
         this.addEventForPlayer();
 
         this.initSongList();
 
+    },
 
-
+    prepareFirstSong: function() {
+        this.doPlayAudio(this.songsList[0]);
+        this.defaultPlayer.pause();
     },
 
     addEventForPlayer: function() {
@@ -150,6 +206,7 @@ var host = {
             url: "http://chn-kehu:8217/getSongList",
             success: function(data) {
                 host.drawSongList(data);
+                host.prepareFirstSong(host.songsList[0]);
             }
         });
     },
@@ -243,8 +300,6 @@ var host = {
                     document.body.removeChild(host.searchResultDom);
                     host.searchResultDom = null;
                 }
-               /* $(document).off('click');*/
-                
             });
             ulDom.appendChild(liDom);
         }
@@ -259,22 +314,131 @@ var host = {
         });
     },
 
-    doShowArtistImg: function(imgUrl) {
-        var imgUrl = imgUrl || "./gem.jpg";
-        this.artistImg.src = imgUrl;
+    doShowArtistImg: function(songInfo) {
+        var dist = this.dist,
+            find = dist.find,
+            imgNum = 9;
+            rotateValue = this.rotateValue || 0;
+        if (find) {
+            rotateValue = rotateValue + dist.dir * dist.step * 40;
+            this.frontImgIdx = (this.frontImgIdx + dist.dir * dist.step * (-1) + imgNum) % imgNum;
+        } else {
+            if (rotateValue === 0) {
+                rotateValue = 360;
+            } else {
+                rotateValue = 0;
+            }
+            
+            this.frontImgIdx = 0;
+        }
+        $('.show-container').css('transform', 'translateZ(-404.747px) rotateY(' + rotateValue + 'deg)');
+        this.rotateValue = rotateValue;
+        if (this.curSongIdx !== -1) {
+            this.updateDirtyImg();
+        } else {
+            this.updateDirtyImgInterrupt(songInfo);
+        }
+        
+    },
+
+    updateDirtyImgInterrupt: function(songInfo) {
+        var imgSongMap = this.imgSongMap || [],
+            frontImgIdx = this.frontImgIdx,
+            imgList = this.imgList;
+        imgList[frontImgIdx].attr('src', songInfo.artistImg);
+    },
+
+    updateDirtyImg: function() {
+        var imgSongMap = this.imgSongMap || [],
+            frontImgIdx = this.frontImgIdx,
+            curSongIdx = this.curSongIdx,
+            songsList = this.songsList,
+            imgList = this.imgList,
+            len = songsList.length,
+            step = 4,
+            imgNum = 9,
+            i;
+        //update the front Img
+        if (imgSongMap[frontImgIdx] !== songsList[curSongIdx].artistImg) {
+            imgSongMap[frontImgIdx] = songsList[curSongIdx].artistImg;
+            imgList[frontImgIdx].attr('src', songsList[curSongIdx].artistImg);
+        }
+        i = 1;
+        while (i <= step) {
+            var curI = (frontImgIdx + i) % imgNum,
+                curS = (curSongIdx + i) % len;
+            if (imgSongMap[curI] !== songsList[curS].artistImg) {
+                imgSongMap[curI] = songsList[curS].artistImg;
+                imgList[curI].attr('src', songsList[curS].artistImg);
+            }
+            i++;
+        }
+        i = 1;
+        while (i <= step) {
+            var curI = (frontImgIdx - i + imgNum) % imgNum,
+                curS = (curSongIdx - i + len) % len;
+            if (imgSongMap[curI] !== songsList[curS].artistImg) {
+                imgSongMap[curI] = songsList[curS].artistImg;
+                imgList[curI].attr('src', songsList[curS].artistImg);
+            }
+            i++;
+        }
     },
 
     doPlayAudio: function(songInfo) {
-        var audio = this.defaultPlayer;
-        this.doShowArtistImg(songInfo.artistImg);
-        this.clearLrcOld();
-        this.doSearchLrc(songInfo.songName, songInfo.artistName);
-        host.curMusic = songInfo;
+        var audio = this.defaultPlayer,
+            songsList = this.songsList,
+            len = songsList.length;
+        this.curMusic = songInfo;
+        this.lastSongIdx = this.curSongIdx !== undefined ? this.curSongIdx : -1;
+        this.nextSongIdx = this.curSongIdx !== undefined ? (this.curSongIdx + 1) % len : 0;
+        this.curSongIdx = this.getIdxOfSong(songInfo);
+        this.dist = this.getStepsForSwitch(this.lastSongIdx, this.curSongIdx, 4);
+        this.doShowArtistImg(songInfo);
         audio.src = songInfo.audioUrl;
         audio.play();
-        this.lrcTitle.innerHTML = songInfo.songName;
         this.highLightItemInList(songInfo);
         this.changeLikeSongIcon(songInfo);
+    },
+
+    getStepsForSwitch: function(lastSongIdx, curSongIdx, step) {
+        var songsList = this.songsList,
+            len = songsList.length,
+            i = 0;
+            if (lastSongIdx === -1 || curSongIdx === -1) {
+                return {find: false};
+            }
+            while (i <= step) {
+                var idx = (i + lastSongIdx) % len;
+                if (idx === curSongIdx)
+                {
+                    return {find: true, dir: -1, step: i};
+                }
+                i++;
+            }
+            i = 0;
+            while (i <= step) {
+                var idx = (lastSongIdx - i + len) % len;
+                if (idx === curSongIdx)
+                {
+                    return {find: true, dir: 1, step: i};
+                }
+                i++;
+            }
+            
+            return {find: false}
+    },
+
+    getIdxOfSong: function(songInfo) {
+        var songsList = this.songsList,
+            len = songsList.length,
+            curNum = songInfo.number;
+        for (var i = 0; i < len; i++) {
+            if (curNum === songsList[i].number) {
+                return i;
+            }
+        }
+        return -1; //this song is not stored.
     },
 
     changeLikeSongIcon: function(songInfo) {
@@ -309,17 +473,6 @@ var host = {
         }
     },
 
-    clearLrcOld: function() {
-        if (this.lrcTimer) {
-            window.clearInterval(this.lrcTimer);
-        }
-        this.lrcLine[0].innerHTML = "";
-        this.lrcLine[1].innerHTML = "";
-        this.lrcLine[2].innerHTML = "歌词加载中...";
-        this.lrcLine[3].innerHTML = "";
-        this.lrcLine[4].innerHTML = "";
-    },
-
     doPlayNext: function() {
         var curMusic = this.curMusic,
             songsList = this.songsList,
@@ -337,133 +490,9 @@ var host = {
             this.doPlayAudio(songsList[nextNum]);
         } else {
             console.log("why idx will be -1?");
-            this.doPlayAudio(songsList[0]);
+            this.doPlayAudio(songsList[this.nextSongIdx || 0]); 
         }
         
-    },
-
-    dealwithLrc: function(lrc) {
-        var array = lrc.split('['),
-            len = array.length,
-            lrcArr = [],
-            reg = new RegExp('^\\d');
-        for (var i = 0; i < len; i++) {
-            var result = array[i].split(']');
-            if (result.length > 1) {
-                if (reg.test(result[0])) {
-                    lrcArr.push({time: result[0], content: result[1]});
-                }
-            }
-        }
-
-        for (var i = lrcArr.length - 1; i >= 0; i--) {
-            if (lrcArr[i].content === "" && i !== lrcArr.length - 1) {
-                lrcArr[i].content = lrcArr[i + 1].content;
-            }
-        }
-
-        for (var i = 0; i < lrcArr.length; i++) { //convert string to time
-            var time = lrcArr[i].time.split(":"),
-                timeFloat;
-            if (time.length > 1) {
-                timeFloat = parseFloat(time[0])*60*1000 + parseFloat(time[1])*1000; 
-                lrcArr[i].time = timeFloat;
-            } else {
-                console.log("lrc error 1");
-            }
-        } 
-
-        function compare(a, b) {
-            return a.time - b.time;
-        } 
-
-        lrcArr.sort(compare);       
-
-        this.showLrc(lrcArr);
-
-    },
-
-    showLrc: function(lrcArr) {
-        var idx = 0,
-            len = lrcArr.length,
-            time = 0,
-            defaultPlayer = this.defaultPlayer,
-            totTime = defaultPlayer.duration * 1000;
-        host.lrcTimer = window.setInterval(function(){
-            var curTime = defaultPlayer.currentTime * 1000;
-            if (curTime >= totTime || idx >= lrcArr.length) {
-                window.clearInterval(host.lrcTimer);
-            } else {
-                if (curTime > lrcArr[idx].time) {
-                    if (idx - 2 >= 0) {
-                       host.lrcLine[0].innerHTML = lrcArr[idx-2].content; 
-                    } else {
-                       host.lrcLine[0].innerHTML = "" ;
-                    }
-                    if (idx - 1 >= 0) {
-                       host.lrcLine[1].innerHTML = lrcArr[idx-1].content; 
-                    } else {
-                       host.lrcLine[1].innerHTML = "" ;
-                    }
-
-                    host.lrcLine[2].innerHTML = lrcArr[idx].content;
-
-                    if (idx + 1 < len - 1) {
-                        host.lrcLine[3].innerHTML = lrcArr[idx+1].content;
-                    } else {
-                        host.lrcLine[3].innerHTML = "";
-                    }  
-                    if (idx + 2 < len - 1) {
-                        host.lrcLine[4].innerHTML = lrcArr[idx+2].content;
-                    } else {
-                        host.lrcLine[4].innerHTML = "";
-                    } 
-                    idx++; 
-                }
-            }
-        },100);
-    },
-
-    doDownloadLrc: function(lrcResult) {
-        var result = lrcResult.result,
-            audioUrl;
-        if (result.length === 0) {
-            console.log('搜不到歌词%>_<%');
-            this.lrcLine[2].innerHTML = "搜不到歌词%>_<%";
-        } else {
-            url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + result[0].lrc + '"') + '&format=xml';
-            $.ajax({
-                type: "GET",
-                url: url,
-                success: function(text){
-                    text = text.split("<p>")[1].split("</p>")[0];
-                    host.dealwithLrc(text);
-                },
-                error: function(){
-                    console.log('歌词下载失败%>_<%');
-                    this.lrcLine[2].innerHTML = "歌词下载失败%>_<%";
-                },
-                dataType: "text"
-            });
-        }
-    },
-
-    doSearchLrc: function(songName, artistName) {
-        var url = "http://geci.me/api/lyric/" + encodeURI(songName) + '/' + encodeURI(artistName);
-        url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + url + '"') + '&format=xml';
-        $.ajax({
-            type: "GET",
-            url: url,
-            success: function(text){
-                text = text.split("<p>")[1].split("</p>")[0];
-                var jsonResult =  JSON.parse(text);
-                host.doDownloadLrc(jsonResult);
-            },
-            error: function(){
-                alert("Error");
-            },
-            dataType: "text"
-        });
     },
 
     togglePlay: function(defaultPlayer) {
@@ -489,6 +518,3 @@ $(document).ready(function(){
     host.init();
 });
 
-function handleCallbackForLrc(response) {
-    console.log(response);
-}
